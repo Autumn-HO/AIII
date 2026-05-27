@@ -836,6 +836,91 @@ function randomResult() {
   renderResult();
 }
 
+function renderPreviewFromUrl() {
+  const preview = new URLSearchParams(window.location.search).get("preview");
+  if (!preview) {
+    return false;
+  }
+
+  if (preview === "best-paper") {
+    renderBestPaperPreview();
+    return true;
+  }
+
+  if (preview === "review-40") {
+    renderReviewerPreview("四十");
+    return true;
+  }
+
+  if (preview === "review-adam") {
+    renderReviewerPreview("Who is Adam");
+    return true;
+  }
+
+  return false;
+}
+
+function renderBestPaperPreview() {
+  const random = mulberry32(20260527);
+  const decision = decisions[6];
+  const reviewers = [
+    makeReviewerCard("懂你型", 10, 4),
+    makeReviewerCard("实验够用型", 9, 5),
+    makeReviewerCard("故事买账型", 8, 4),
+  ];
+  const scores = reviewers.map((reviewer) => reviewer.rating);
+  state.answers = [
+    { stage: "reviews", choice: "有没有 reviewer 说 however" },
+    { stage: "decision", choice: "刷新网页" },
+  ];
+  state.reviewPacket = {
+    seed: 20260527,
+    preliminaryDecision: decision,
+    scores,
+    reviewers,
+  };
+  state.result = {
+    seed: 20260527,
+    decision,
+    scores,
+    reviewers,
+    meta: metaReviews.Accept[Math.floor(random() * metaReviews.Accept.length)],
+    persona: buildPersona(decision, reviewers, scores),
+  };
+  renderResult();
+}
+
+function renderReviewerPreview(keyword) {
+  const reviewer = reviewerTypes.find((item) => item.name.includes(keyword));
+  if (!reviewer) {
+    renderIntro();
+    return;
+  }
+  state.seedSalt = 20260527;
+  state.answers = [
+    { stage: "submit", choice: "先交，后面的交给 reviewer" },
+    { stage: "waiting", choice: "群里有人说有动静，我立刻打开网页" },
+    { stage: "reviews", choice: "最长的那条 review" },
+  ];
+  state.reviewPacket = {
+    seed: 20260527,
+    preliminaryDecision: decisions[2],
+    scores: [4],
+    reviewers: [makeReviewerCard(reviewer.name, reviewer.name.includes("Adam") ? 4 : 3, 5)],
+  };
+  state.reviewResponseIndex = 0;
+  renderReviewerResponse(0);
+}
+
+function makeReviewerCard(name, rating, confidence) {
+  const reviewer = reviewerTypes.find((item) => item.name === name);
+  return {
+    ...reviewer,
+    rating,
+    confidence,
+  };
+}
+
 function buildReviewPacket() {
   const answerKey = state.answers.map((answer) => `${answer.stage}:${answer.choice}`).join("|");
   const seed = hashString(`reviews|${answerKey}|${state.seedSalt}`);
@@ -1079,15 +1164,11 @@ function renderResult() {
       </details>
 
       <div class="result-actions">
-        <button class="primary-btn" data-action="download">下载结果卡</button>
-        <button class="utility-btn" data-action="copy">复制审稿结果</button>
-        <button class="utility-btn" data-action="again">再投一次</button>
+        <button class="primary-btn" data-action="again">再投一次</button>
         <button class="utility-btn" data-action="home">回到首页</button>
       </div>
     </section>
   `;
-  app.querySelector('[data-action="download"]').addEventListener("click", downloadShareCard);
-  app.querySelector('[data-action="copy"]').addEventListener("click", copyResultText);
   app.querySelector('[data-action="again"]').addEventListener("click", startQuiz);
   app.querySelector('[data-action="home"]').addEventListener("click", renderIntro);
   resetScroll();
@@ -1300,4 +1381,6 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-renderIntro();
+if (!renderPreviewFromUrl()) {
+  renderIntro();
+}
