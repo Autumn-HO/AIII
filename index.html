@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta
+      name="description"
+      content="AIII：Academic Illusion & Inference Institute。投出你的 Best Paper，模拟 Accept / Reject 后的 Poster、Spotlight、Oral 审稿结果。"
+    />
+    <title>AIII | 投出你的 Best Paper</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css?v=probability2" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar" aria-label="AIII navigation">
+        <a class="brand" href="./index.html" aria-label="AIII home">
+          <span class="brand-mark">AIII</span>
+          <span class="brand-sub">学术幻觉与审稿玄学研究所</span>
+        </a>
+      </header>
+
+      <main id="app" class="app" aria-live="polite"></main>
+    </div>
+
+    <template id="intro-template">
+      <section class="intro-grid">
+        <div class="hero-copy">
+          <div class="kicker">AIII 2026</div>
+          <p class="aiii-full-name">AIII = Academic Illusion & Inference Institute</p>
+          <h1>投出你的 Best Paper</h1>
+          <p class="hero-subtitle">先交上去，剩下交给 reviewer。</p>
+          <p class="hero-alias">学术幻觉与审稿玄学研究所</p>
+          <div class="system-strip" aria-label="AIII system status">
+            <span>Reviewer 2</span>
+            <b>正在 however</b>
+            <span>AC</span>
+            <b>通灵中</b>
+            <span>结果</span>
+            <b>pending</b>
+          </div>
+          <div class="hero-actions">
+            <button class="primary-btn" data-action="start">开始投稿</button>
+            <button class="ghost-btn" data-action="random">直接看 Decision</button>
+          </div>
+        </div>
+
+        <aside class="share-preview" aria-label="sample result">
+          <div class="preview-card">
+            <span>AIII Decision Letter</span>
+            <h2>Accept</h2>
+            <p>Presentation: Oral。中了，但还要上台解释 reviewer 2 到底想问什么。</p>
+            <div class="preview-score">7 / 8 / 9</div>
+            <div class="preview-reviewers" aria-hidden="true">
+              <b>R1 however</b>
+              <b>R2 40 questions</b>
+              <b>R3 thanks</b>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </template>
+
+    <script src="./script.js?v=probability2"></script>
+  </body>
+</html>
